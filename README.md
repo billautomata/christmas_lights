@@ -1,2 +1,11 @@
-# christmas_lights
-nodejs + raspi + gpio + relays = christmas
+# default project
+
+`npm install`
+
+`npm run create_keys`
+
+`npm run https`
+
+or
+
+`npm run http`
