@@ -7,6 +7,35 @@ var https = require('https')
 var express = require('express')
 var io
 
+var mongojs = require('mongojs')
+
+var db = mongojs('lights', ['patterns'])
+db.on('error', function (err) {
+  console.log('database error', err)
+})
+db.on('connect', function () {
+  console.log('database connected')
+})
+db.patterns.find({
+    $query: {},
+    $orderby: {
+      _id: -1
+    },
+  }, {}, {
+    limit: 250
+  },
+  function (err, data) {
+    if (err) {
+      console.log('error')
+      console.log(err)
+      // res.status(500)
+    } else {
+      console.log(data.length + ' elements returned - latest')
+      // res.status(200).json(data)
+    }
+  })
+
+
 var port = 8000;
 
 var options = {
