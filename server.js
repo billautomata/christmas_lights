@@ -53,12 +53,13 @@ io.on('connection', function(socket){
   console.log(sockets.length, 'users total')
 
   socket.on('get_current_pattern', function(d){
-    socket.emit('current_pattern', p.current_pattern())
+    socket.emit('current_pattern', p.current_module())
+    socket.emit('current_pattern_index', { value: p.current_pattern_index() })
   })
 
-  socket.on('new_pattern', function(d){
+  socket.on('new_module', function(d){
     console.log(d)
-    p.set_pattern(d)
+    p.set_module(d)
   })
 
   socket.on('disconnect', function(){

@@ -2,6 +2,7 @@
 // var $ = window.$
 var d3 = window.d3
 
+var current_module = {}
 var current_pattern = []
 // var current_pattern_index = 0
 // var current_interval = 0
@@ -13,7 +14,8 @@ s.emit('get_current_pattern', { empty: true })
 s.on('current_pattern', function (d) {
   console.log(d)
 
-  current_pattern = d
+  current_module = d
+  current_pattern = current_module.data
 
   var parent = d3.select('div#main')
 
@@ -47,13 +49,27 @@ s.on('current_pattern', function (d) {
         }
 
         // send the new pattern to the server
-        s.emit('new_pattern', current_pattern)
+        s.emit('new_module', current_module)
       })
     })
 
     var interval = local.append('div').attr('class', 'col-xs-1')
       .append('input')
       .attr('type', 'text')
+
+    interval.on('keyup', function () {
+      console.log(d3.select(this).property('value'))
+      var v = parseInt(d3.select(this).property('value'), 10)
+      console.log(v)
+      if (isNaN(v)) {
+        console.log('NAN!!')
+        delete current_pattern[pattern_idx].interval
+      } else {
+        current_pattern[pattern_idx].interval = v
+      }
+      console.log(current_pattern[pattern_idx])
+      s.emit('new_module', current_module)
+    })
 
     if (row.interval !== undefined) {
       interval.attr('value', row.interval)
