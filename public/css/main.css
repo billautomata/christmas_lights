@@ -4,19 +4,12 @@
    Author's custom styles
    ========================================================================== */
 
+.pattern_row {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+input {
+  height: 2.4em;
+  text-align: center;
+}

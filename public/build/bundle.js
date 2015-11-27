@@ -1,5 +1,69 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-console.log(Date.now())
-console.log('lol')
+// var $ = window.$
+var d3 = window.d3
+
+var current_pattern = []
+// var current_pattern_index = 0
+// var current_interval = 0
+
+var s = window.socket
+
+s.emit('get_current_pattern', { empty: true })
+
+s.on('current_pattern', function (d) {
+  console.log(d)
+
+  current_pattern = d
+
+  var parent = d3.select('div#main')
+
+  current_pattern.forEach(function (row, pattern_idx) {
+    var local = parent.append('div')
+      .attr('class', 'col-xs-12 pattern_row')
+      .attr('id', 'pattern_' + pattern_idx)
+
+    row.data.forEach(function (element, idx) {
+      var btn = local.append('div').attr('class', 'btn btn-primary col-xs-1').html('&nbsp')
+      if (element === 0) {
+        btn.attr('class', 'btn btn-default col-xs-1')
+      }
+      btn.on('click', function () {
+        var v = current_pattern[pattern_idx].data[idx]
+
+        // reverse the state of the data
+        if (v === 0) {
+          v = 1
+        } else {
+          v = 0
+        }
+
+        console.log(current_pattern[pattern_idx].data[idx], v)
+        current_pattern[pattern_idx].data[idx] = v
+
+        if (v === 0) {
+          btn.attr('class', 'btn btn-default col-xs-1')
+        } else {
+          btn.attr('class', 'btn btn-primary col-xs-1')
+        }
+
+        // send the new pattern to the server
+        s.emit('new_pattern', current_pattern)
+      })
+    })
+
+    var interval = local.append('div').attr('class', 'col-xs-1')
+      .append('input')
+      .attr('type', 'text')
+
+    if (row.interval !== undefined) {
+      interval.attr('value', row.interval)
+    }
+  })
+})
+
+s.on('current_index', function (d) {
+  d3.selectAll('div.pattern_row').style('background-color', 'white')
+  d3.select('div#pattern_' + d.value).style('background-color', 'blue')
+})
 
 },{}]},{},[1]);

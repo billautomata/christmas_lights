@@ -1,10 +1,11 @@
 // https://www.digitalocean.com/community/tutorials/how-to-create-an-ssl-certificate-on-nginx-for-ubuntu-14-04
 // openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx.key -out nginx.crt
 
-var fs = require('fs'),
-    http = require('http'),
-    https = require('https'),
-    express = require('express');
+var fs = require('fs')
+var http = require('http')
+var https = require('https')
+var express = require('express')
+var io
 
 var port = 8000;
 
@@ -19,21 +20,20 @@ var app = express();
 
 var server
 
-// console.log(process.env)
-
-if(process.env.HTTPS && process.env.HTTPS === '1'){
-  server = https.createServer(options, app).listen(port, function(){
+if (process.env.HTTPS && process.env.HTTPS === '1') {
+  server = https.createServer(options, app).listen(port, function () {
     console.log("Express _SECURE_ server listening on port " + port);
   });
 } else {
-  server = http.createServer(app).listen(port, function(){
+  server = http.createServer(app).listen(port, function () {
     console.log("Express server listening on port " + port);
   });
+  io = require('socket.io')(server)
 }
-//
-// var server = http.createServer(app).listen(port, function(){
-//   console.log("Express server listening on port " + port);
-// });
+
+app.get('/current_pattern', function (req, res) {
+  res.status(200).json(p.current_pattern())
+})
 
 // app.get('/', function (req, res) {
 //     res.writeHead(200);
@@ -42,6 +42,31 @@ if(process.env.HTTPS && process.env.HTTPS === '1'){
 
 app.use(express.static(__dirname + '/public'))
 
-var p = require('./lib/Player.js')()
+var sockets = []
 
+io.on('connection', function(socket){
+
+  console.log('a user connected');
+  sockets.push(socket)
+  p.set_sockets(sockets)
+
+  console.log(sockets.length, 'users total')
+
+  socket.on('get_current_pattern', function(d){
+    socket.emit('current_pattern', p.current_pattern())
+  })
+
+  socket.on('new_pattern', function(d){
+    console.log(d)
+    p.set_pattern(d)
+  })
+
+  socket.on('disconnect', function(){
+    sockets = sockets.filter(function(s){ return s !== socket })
+    p.set_sockets(sockets)
+  })
+
+});
+
+var p = require('./lib/Player.js')()
 p.start()
