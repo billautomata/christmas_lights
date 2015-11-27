@@ -9,12 +9,12 @@
 
 # pattern structure
 
-Array of arrays
+Array of objects
 
 ```javascript
 var pattern = [
-  { tempo: 180, data: [0,1,1,0,0,0,0] },
+  { interval: 180, data: [0,1,1,0,0,0,0] },
   { data: [0,0,1,1,0,1,0] },
-  { tempo: 120, data: [0,1,1,0,1,0,1] }
+  { interval: 120, data: [0,1,1,0,1,0,1] }
 ]
 ```
