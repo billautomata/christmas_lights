@@ -41,3 +41,7 @@ if(process.env.HTTPS && process.env.HTTPS === '1'){
 // });
 
 app.use(express.static(__dirname + '/public'))
+
+var p = require('./lib/Player.js')()
+
+p.start()
