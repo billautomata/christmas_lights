@@ -23,11 +23,12 @@ var pattern = {
 ```
 
 #### client
-* [ ] add row
-* [ ] delete row
+* [x] add row
+* [x] delete row
 * [ ] list patterns
 * [ ] write pattern button (triggers a database save)
 
 #### server
 * [ ] write pattern to db
-* [ ] read patterns from db
+* [ ] read patterns from db by name
+* [ ] list patterns in db

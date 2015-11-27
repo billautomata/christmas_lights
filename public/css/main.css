@@ -13,3 +13,14 @@ input {
   height: 2.4em;
   text-align: center;
 }
+
+#main {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin: 10px;
+  background-color: rgb(244,244,244);
+}
+
+#footer {
+  margin-top: 20px;
+}

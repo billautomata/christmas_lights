@@ -60,6 +60,7 @@ io.on('connection', function(socket){
   socket.on('new_module', function(d){
     console.log(d)
     p.set_module(d)
+    // socket.emit('current_pattern', p.current_module())
   })
 
   socket.on('disconnect', function(){
