@@ -57,11 +57,11 @@ s.on('current_pattern', function (d) {
       .attr('type', 'text')
 
     interval.on('keyup', function () {
-      console.log(d3.select(this).property('value'))
+      // console.log(d3.select(this).property('value'))
       var v = parseInt(d3.select(this).property('value'), 10)
-      console.log(v)
+      // console.log(v)
       if (isNaN(v)) {
-        console.log('NAN!!')
+        console.log('NAN!')
         delete current_pattern[pattern_idx].interval
       } else {
         current_pattern[pattern_idx].interval = v
