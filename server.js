@@ -3,14 +3,23 @@
 
 var gpio
 var pins = [3,5,7,8]
+var pins_setup = [false,false,false,false]
 
 console.log(process.env)
 
 if(process.env.RPI && process.env.RPI === '1'){
   console.log('setting up the GPIO pins')
   gpio = require('rpi-gpio')
-  pins.forEach(function(p){
-    gpio.setup(p, gpio.DIR_OUT)
+  pins.forEach(function(p,pidx){
+    gpio.setup(p, gpio.DIR_OUT, function(err){
+      if(err){
+        console.log('error', err)
+      } else {
+        console.log('no error setting up pin ', p)
+        pins_setup[pidx] = true
+        gpio.write(p, true)
+      }
+    })
   })
 }
 
