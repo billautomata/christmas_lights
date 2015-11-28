@@ -12,9 +12,6 @@ if(process.env.RPI && process.env.RPI === '1'){
   pins.forEach(function(p){
     gpio.setup(p, gpio.DIR_OUT)
   })
-  setTimeout(function(){
-    gpio.write(pins[0], true)
-  },1000)
 }
 
 var fs = require('fs')
