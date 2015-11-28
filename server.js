@@ -1,6 +1,18 @@
 // https://www.digitalocean.com/community/tutorials/how-to-create-an-ssl-certificate-on-nginx-for-ubuntu-14-04
 // openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx.key -out nginx.crt
 
+var gpio
+var pins = [3,5,7,8]
+
+if(process.env.RPI && process.env.RPI === 1){
+  gpio = require('rpi-gpio')
+  pins.forEach(function(p){
+    gpio.setup(p, gpio.DIR_OUT)
+    gpio.write(p,true)
+    gpio.write(p,false)
+  })
+}
+
 var fs = require('fs')
 var http = require('http')
 var https = require('https')
