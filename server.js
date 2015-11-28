@@ -123,3 +123,4 @@ io.on('connection', function(socket){
 
 var p = require('./lib/Player.js')()
 p.start()
+p.setup_gpio(gpio,pins)
