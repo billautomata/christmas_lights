@@ -6,7 +6,7 @@ var pins = [3,5,7,8]
 
 console.log(process.env)
 
-if(process.env.RPI && process.env.RPI === 1){
+if(process.env.RPI && process.env.RPI === '1'){
   console.log('setting up the GPIO pins')
   gpio = require('rpi-gpio')
   pins.forEach(function(p){
