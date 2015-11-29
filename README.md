@@ -22,6 +22,10 @@ Requires mongodb for storing patterns.
 
 `brew install mongodb` (osx) or `sudo apt-get install mongodb-server` (linux)
 
+### assembly instructions
+
+![model b plus pinout](public/pinout_layout_model_bplus.png)
+
 # pattern structure
 
 Unique by name.
