@@ -1,10 +1,18 @@
 # christmas_lights
 
+requires:
+* nodejs v4
+* mongodb
+* 5V relay module [amazon link](http://www.amazon.com/gp/product/B00C8O9KHA?psc=1&redirect=true&ref_=oh_aui_search_detailpage)
+* Raspberry Pi Model B+ (2014) [amazon link](http://www.amazon.com/Raspberry-Pi-Model-512MB-Computer/dp/B00LPESRUK) (reference implementation)
+
 `npm install`
 
 `npm run create_keys`
 
-`npm run https` or `npm run http`
+`npm run https` or `npm run http` for local development
+
+`npm run rpi_https` or `npm run rpi_http` for when it is running on the raspberry pi
 
 Requires mongodb for storing patterns.
 
