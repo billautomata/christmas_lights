@@ -3,17 +3,19 @@ var d3 = window.d3
 var current_module = {}
 var current_pattern = []
 var s = window.socket
+var div_sequencer
 
 s.emit('get_current_pattern', { empty: true })
 
 s.on('current_pattern', function (d) {
+  console.log('on current pattern')
   console.log(d)
   current_module = d
   current_pattern = current_module.data
 
   d3.select('div#main').selectAll('*').remove()
 
-  var parent = d3.select('div#main').append('div')
+  div_sequencer = d3.select('div#main').append('div')
   var footer = d3.select('div#main').append('div')
   var btn_add_row = footer.append('div')
     .attr('id', 'footer')
@@ -23,7 +25,7 @@ s.on('current_pattern', function (d) {
   btn_add_row.on('click', function () {
     current_module.data.push({data: [0, 0, 0, 0, 0, 0, 0, 0]})
     s.emit('new_module', current_module)
-    render_module(parent)
+    render_sequencer_controls()
   })
 
   var all_buttons = d3.select('div#main')
@@ -42,20 +44,21 @@ s.on('current_pattern', function (d) {
     })
   })
 
-  render_module(parent)
+  render_sequencer_controls()
 })
 
 s.on('current_index', function (d) {
   d3.selectAll('div.pattern_row').style('background-color', 'rgba(0,0,0,0)')
-  d3.select('div#pattern_' + d.value).style('background-color', 'rgba(82,155,82,1)')
+  d3.select('div#pattern_' + d.value).style('background-color', 'rgba(144,144,144,1)')
 })
 
-function render_module (parent) {
+function render_sequencer_controls () {
   console.log('render called')
 
-  parent.selectAll('*').remove()
+  div_sequencer.selectAll('*').remove()
 
-  var input_name = parent.append('div')
+  // setup the name of the module
+  var input_name = div_sequencer.append('div')
     .style('font-size', '24px')
     .append('input').attr('type', 'text').attr('class', 'col-xs-8 text-left')
     .attr('value', current_module.name)
@@ -66,14 +69,28 @@ function render_module (parent) {
     s.emit('new_module', current_module)
   })
 
-  var save_button = parent.append('div').attr('class', 'col-xs-2 btn btn-info').html('save to db')
+  var save_button = div_sequencer.append('div').attr('class', 'col-xs-2 btn btn-info').html('save to db')
 
   save_button.on('click', function () {
     s.emit('save_to_db')
   })
 
+  // draw each row of buttons
+
+  // draw labels
+  var div_labels = div_sequencer.append('div')
+    .attr('class', 'col-xs-12 labels text-center')
+
+  current_pattern[0].data.forEach(function (channel, channel_idx) {
+    console.log(channel_idx)
+    div_labels.append('div').attr('class', 'col-xs-1').html('ch ' + (channel_idx + 1))
+  })
+
+  div_labels.append('div').attr('class', 'col-xs-2').html('interval')
+  div_labels.append('div').attr('class', 'col-xs-2').html('delete row')
+
   current_pattern.forEach(function (row, row_idx) {
-    var local = parent.append('div')
+    var local = div_sequencer.append('div')
       .attr('class', 'col-xs-12 pattern_row')
       .attr('id', 'pattern_' + row_idx)
 
@@ -127,14 +144,14 @@ function render_module (parent) {
       interval.attr('value', row.interval)
     }
 
-    var killrow = local.append('div').attr('class', 'btn btn-danger col-xs-offset-1 col-xs-1').html('&nbsp')
+    var killrow = local.append('div').attr('class', 'btn btn-danger col-xs-2').html('&nbsp')
     killrow.on('click', function () {
       current_module.data = current_module.data.filter(function (e, i) {
         return i !== row_idx
       })
       current_pattern = current_module.data
       s.emit('new_module', current_module)
-      render_module(parent)
+      render_sequencer_controls(div_sequencer)
     })
   })
 }

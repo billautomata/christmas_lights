@@ -1,6 +1,10 @@
 # christmas_lights
 
-requires:
+Raspberry Pi christmas lights sequencer and and browser based pattern editor.  View, edit, play, save, and restore patterns from the database.  Supports 8 channels of lights.  No pattern length limit. Multiple speeds per pattern.  Realtime web-sockets based editing.
+
+<img width="1006" alt="screen shot 2015-11-29 at 8 18 47 am" src="https://cloud.githubusercontent.com/assets/432483/11458301/0189ec02-9672-11e5-9176-a07418a28de8.png">
+
+#### requires
 * nodejs v4
 * mongodb
 * 5V relay module [amazon link](http://www.amazon.com/gp/product/B00C8O9KHA?psc=1&redirect=true&ref_=oh_aui_search_detailpage)
