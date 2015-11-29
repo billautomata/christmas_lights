@@ -21,8 +21,8 @@ var port = 8000         // webserver port
 ///////////////////////////////////////////////////////////////////////////////
 // setup GPIO
 
-var pins = [3, 5, 7, 8]
-var pins_setup = [false, false, false, false]
+var pins = [3, 5, 7, 8, 10, 12, 11, 13]
+var pins_setup = [false, false, false, false, false, false, false, false]
 
 if (process.env.RPI && process.env.RPI === '1') {
   console.log('Raspberry Pi envrionment variable set.')

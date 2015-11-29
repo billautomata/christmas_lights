@@ -26,6 +26,19 @@ Requires mongodb for storing patterns.
 
 ![model b plus pinout](public/pin_layout_model_bplus.png)
 
+* Power
+  * PIN2 > VCC _a 5V+ connection_
+  * PIN6 > GND _a 5V- connection_
+* IO
+  * PIN3 > CH1
+  * PIN5 > CH2
+  * PIN7 > CH3
+  * PIN8 > CH4
+  * PIN10 > CH5
+  * PIN12 > CH6
+  * PIN11 > CH7
+  * PIN13 > CH8
+  
 # pattern structure
 
 Unique by name.
