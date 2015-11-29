@@ -6,10 +6,13 @@
 
 `npm run https` or `npm run http`
 
+Requires mongodb for storing patterns.
+
+`brew install mongodb` (osx) or `sudo apt-get install mongodb-server` (linux)
 
 # pattern structure
 
-Array of objects
+Unique by name.
 
 ```javascript
 var pattern = {
@@ -25,14 +28,16 @@ var pattern = {
 #### client
 * [x] add row
 * [x] delete row
+
 * [x] list patterns
 * [x] write pattern button (triggers a database save)
-
+* [ ] delete pattern button (triggers a database remove)
 * [ ] make pretty
+* [ ] write docs
+* [ ] insert row
 
 #### server
 * [x] write pattern to db
 * [x] read patterns from db by name
 * [x] list patterns in db
-
-* [ ] standardize launch and inputs for first run
+* [x] standardize launch and inputs for first run

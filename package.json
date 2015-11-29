@@ -6,17 +6,18 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "create_keys": "openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx.key -out nginx.crt",
+    "dev_http": "export HTTPS=0; supervisor -w server.js,lib/ server.js",
     "https": "export HTTPS=1; node server.js",
     "http": "export HTTPS=0; node server.js",
-    "dev_http": "export HTTPS=0; supervisor -w server.js,lib/ server.js"
+    "rpi_https": "export RPI=1; export HTTPS=1; node server.js",
+    "rpi_http": "export RPI=1; export HTTPS=0; node server.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "billautomata",
+  "license": "MIT",
   "dependencies": {
     "brfs": "^1.4.0",
     "browserify": "^9.0.8",
     "express": "^4.12.3",
-    "gpio": "^0.2.7",
     "grunt": "^0.4.5",
     "grunt-browserify": "^3.7.0",
     "grunt-contrib-watch": "^0.6.1",
@@ -28,17 +29,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/billautomata/christmas_lights.git"
+    "url": "https://github.com/billautomata/christmas_lights"
   },
   "keywords": [
-    "ssl",
-    "tls",
-    "https",
-    "privacy"
+    "raspberrypi",
+    "christmas",
+    "relay",
+    "hardware"
   ],
   "bugs": {
-    "url": "https://github.com/billautomata/https_express_example/issues"
+    "url": "https://github.com/billautomata/christmas_lights/issues"
   },
-  "homepage": "https://github.com/billautomata/https_express_example",
+  "homepage": "https://github.com/billautomata/christmas_lights",
   "devDependencies": {}
 }
