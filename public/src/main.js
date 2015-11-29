@@ -25,6 +25,22 @@ s.on('current_pattern', function (d) {
     render_module(parent)
   })
 
+  var all_buttons = d3.select('div#main')
+    .append('div')
+    .attr('class', 'col-xs-12 patterns_parent')
+
+  s.emit('list_patterns')
+
+  s.on('all_patterns', function (d) {
+    console.log('got patterns', d)
+    d.forEach(function (name) {
+      var btn = all_buttons.append('div').attr('class', 'col-xs-2 btn btn-primary').html(name)
+      btn.on('click', function () {
+        s.emit('load_pattern_from_db', { value: name })
+      })
+    })
+  })
+
   render_module(parent)
 })
 
@@ -37,7 +53,23 @@ function render_module (parent) {
   console.log('render called')
 
   parent.selectAll('*').remove()
-  parent.append('h2').html(current_module.name)
+
+  var input_name = parent.append('div')
+    .style('font-size', '24px')
+    .append('input').attr('type', 'text').attr('class', 'col-xs-8 text-left')
+    .attr('value', current_module.name)
+
+  input_name.on('keyup', function () {
+    var v = d3.select(this).property('value')
+    current_module.name = v
+    s.emit('new_module', current_module)
+  })
+
+  var save_button = parent.append('div').attr('class', 'col-xs-2 btn btn-info').html('save to db')
+
+  save_button.on('click', function () {
+    s.emit('save_to_db')
+  })
 
   current_pattern.forEach(function (row, row_idx) {
     var local = parent.append('div')

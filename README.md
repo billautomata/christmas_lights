@@ -25,10 +25,14 @@ var pattern = {
 #### client
 * [x] add row
 * [x] delete row
-* [ ] list patterns
-* [ ] write pattern button (triggers a database save)
+* [x] list patterns
+* [x] write pattern button (triggers a database save)
+
+* [ ] make pretty
 
 #### server
-* [ ] write pattern to db
-* [ ] read patterns from db by name
-* [ ] list patterns in db
+* [x] write pattern to db
+* [x] read patterns from db by name
+* [x] list patterns in db
+
+* [ ] standardize launch and inputs for first run

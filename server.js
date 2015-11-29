@@ -2,17 +2,17 @@
 // openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx.key -out nginx.crt
 
 var gpio
-var pins = [3,5,7,8]
-var pins_setup = [false,false,false,false]
+var pins = [3, 5, 7, 8]
+var pins_setup = [false, false, false, false]
 
 console.log(process.env)
 
-if(process.env.RPI && process.env.RPI === '1'){
+if (process.env.RPI && process.env.RPI === '1') {
   console.log('setting up the GPIO pins')
   gpio = require('rpi-gpio')
-  pins.forEach(function(p,pidx){
-    gpio.setup(p, gpio.DIR_OUT, function(err){
-      if(err){
+  pins.forEach(function (p, pidx) {
+    gpio.setup(p, gpio.DIR_OUT, function (err) {
+      if (err) {
         console.log('error', err)
       } else {
         console.log('no error setting up pin ', p)
@@ -28,35 +28,6 @@ var http = require('http')
 var https = require('https')
 var express = require('express')
 var io
-
-var mongojs = require('mongojs')
-
-var db = mongojs('lights', ['patterns'])
-db.on('error', function (err) {
-  console.log('database error', err)
-})
-db.on('connect', function () {
-  console.log('database connected')
-})
-db.patterns.find({
-    $query: {},
-    $orderby: {
-      _id: -1
-    },
-  }, {}, {
-    limit: 250
-  },
-  function (err, data) {
-    if (err) {
-      console.log('error')
-      console.log(err)
-      // res.status(500)
-    } else {
-      console.log(data.length + ' elements returned - latest')
-      // res.status(200).json(data)
-    }
-  })
-
 
 var port = 8000;
 
@@ -95,7 +66,7 @@ app.use(express.static(__dirname + '/public'))
 
 var sockets = []
 
-io.on('connection', function(socket){
+io.on('connection', function (socket) {
 
   console.log('a user connected');
   sockets.push(socket)
@@ -103,24 +74,45 @@ io.on('connection', function(socket){
 
   console.log(sockets.length, 'users total')
 
-  socket.on('get_current_pattern', function(d){
+  socket.on('get_current_pattern', function (d) {
     socket.emit('current_pattern', p.current_module())
-    socket.emit('current_pattern_index', { value: p.current_pattern_index() })
+    socket.emit('current_pattern_index', {
+      value: p.current_pattern_index()
+    })
   })
 
-  socket.on('new_module', function(d){
+  socket.on('new_module', function (d) {
     console.log(d)
     p.set_module(d)
-    // socket.emit('current_pattern', p.current_module())
+      // socket.emit('current_pattern', p.current_module())
   })
 
-  socket.on('disconnect', function(){
-    sockets = sockets.filter(function(s){ return s !== socket })
+  socket.on('save_to_db', function(d){
+    p.save_pattern()
+  })
+
+  socket.on('disconnect', function () {
+    sockets = sockets.filter(function (s) {
+      return s !== socket
+    })
     p.set_sockets(sockets)
+  })
+
+  socket.on('list_patterns', function(){
+    p.list_patterns(function(d){
+      socket.emit('all_patterns', d)
+    })
+  })
+
+  socket.on('load_pattern_from_db', function(d){
+    p.get_pattern_from_db(d.value, function(d){
+      p.set_module(d)
+      socket.emit('current_pattern', p.current_module())      
+    })
   })
 
 });
 
 var p = require('./lib/Player.js')()
 p.start()
-p.set_gpio(gpio,pins)
+p.set_gpio(gpio, pins)
