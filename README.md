@@ -36,7 +36,6 @@ var pattern = {
 #### client
 * [x] add row
 * [x] delete row
-
 * [x] list patterns
 * [x] write pattern button (triggers a database save)
 * [ ] delete pattern button (triggers a database remove)
