@@ -1,19 +1,41 @@
 // https://www.digitalocean.com/community/tutorials/how-to-create-an-ssl-certificate-on-nginx-for-ubuntu-14-04
 // openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx.key -out nginx.crt
 
+///////////////////////////////////////////////////////////////////////////////
+// initial / global variables and imports
+
+var fs = require('fs')
+var http = require('http')
+var https = require('https')
+var express = require('express')
+
+var io      // socket.io server
+var server  // express webserver
+var app     // express
 var gpio
+
+var p       // pattern player
+
+var port = 8000         // webserver port
+
+
+///////////////////////////////////////////////////////////////////////////////
+// setup GPIO
+
 var pins = [3, 5, 7, 8]
 var pins_setup = [false, false, false, false]
 
-console.log(process.env)
-
 if (process.env.RPI && process.env.RPI === '1') {
-  console.log('setting up the GPIO pins')
+  console.log('Raspberry Pi envrionment variable set.')
+  console.log('Setting up the GPIO pins...')
+
   gpio = require('rpi-gpio')
   pins.forEach(function (p, pidx) {
     gpio.setup(p, gpio.DIR_OUT, function (err) {
       if (err) {
-        console.log('error', err)
+        console.log('error setting up pin ', p)
+        console.log('with error message')
+        console.log(JSON.stringify(err))
       } else {
         console.log('no error setting up pin ', p)
         pins_setup[pidx] = true
@@ -23,14 +45,8 @@ if (process.env.RPI && process.env.RPI === '1') {
   })
 }
 
-var fs = require('fs')
-var http = require('http')
-var https = require('https')
-var express = require('express')
-var io
-
-var port = 8000;
-
+///////////////////////////////////////////////////////////////////////////////
+// setup webserver
 var options = {
   key: fs.readFileSync('./nginx.key'),
   cert: fs.readFileSync('./nginx.crt'),
@@ -38,10 +54,9 @@ var options = {
   rejectUnauthorized: false
 };
 
-var app = express();
+app = express()
 
-var server
-
+// https or http ?
 if (process.env.HTTPS && process.env.HTTPS === '1') {
   server = https.createServer(options, app).listen(port, function () {
     console.log("Express _SECURE_ server listening on port " + port);
@@ -53,17 +68,11 @@ if (process.env.HTTPS && process.env.HTTPS === '1') {
   io = require('socket.io')(server)
 }
 
-app.get('/current_pattern', function (req, res) {
-  res.status(200).json(p.current_pattern())
-})
-
-// app.get('/', function (req, res) {
-//     res.writeHead(200);
-//     res.end("hello world\n");
-// });
-
+// set the root http route to serve the interface
 app.use(express.static(__dirname + '/public'))
 
+///////////////////////////////////////////////////////////////////////////////
+// setup websockets
 var sockets = []
 
 io.on('connection', function (socket) {
@@ -72,7 +81,7 @@ io.on('connection', function (socket) {
   sockets.push(socket)
   p.set_sockets(sockets)
 
-  console.log(sockets.length, 'users total')
+  console.log(sockets.length, ' users connected')
 
   socket.on('get_current_pattern', function (d) {
     socket.emit('current_pattern', p.current_module())
@@ -82,9 +91,7 @@ io.on('connection', function (socket) {
   })
 
   socket.on('new_module', function (d) {
-    console.log(d)
     p.set_module(d)
-      // socket.emit('current_pattern', p.current_module())
   })
 
   socket.on('save_to_db', function(d){
@@ -96,6 +103,7 @@ io.on('connection', function (socket) {
       return s !== socket
     })
     p.set_sockets(sockets)
+    console.log('DISCONNECT :: ', sockets.length, ' users connected')
   })
 
   socket.on('list_patterns', function(){
@@ -107,12 +115,17 @@ io.on('connection', function (socket) {
   socket.on('load_pattern_from_db', function(d){
     p.get_pattern_from_db(d.value, function(d){
       p.set_module(d)
-      socket.emit('current_pattern', p.current_module())      
+      socket.emit('current_pattern', p.current_module())
+      socket.emit('current_pattern_index', {
+        value: p.current_pattern_index()
+      })
     })
   })
 
 });
 
-var p = require('./lib/Player.js')()
+///////////////////////////////////////////////////////////////////////////////
+// setup webserver
+p = require('./lib/Player.js')()
 p.start()
 p.set_gpio(gpio, pins)
