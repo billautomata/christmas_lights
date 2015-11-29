@@ -18,7 +18,6 @@ var p       // pattern player
 
 var port = 8000         // webserver port
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // setup GPIO
 
@@ -61,6 +60,7 @@ if (process.env.HTTPS && process.env.HTTPS === '1') {
   server = https.createServer(options, app).listen(port, function () {
     console.log("Express _SECURE_ server listening on port " + port);
   });
+  io = require('socket.io')(server)
 } else {
   server = http.createServer(app).listen(port, function () {
     console.log("Express server listening on port " + port);
@@ -81,7 +81,7 @@ io.on('connection', function (socket) {
   sockets.push(socket)
   p.set_sockets(sockets)
 
-  console.log(sockets.length, ' users connected')
+  console.log('CONNECITON :: ', sockets.length, ' users connected')
 
   socket.on('get_current_pattern', function (d) {
     socket.emit('current_pattern', p.current_module())

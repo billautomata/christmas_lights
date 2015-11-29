@@ -1,7 +1,8 @@
 var d3 = window.d3
+var s = window.socket
+
 var current_module = {}
 var current_pattern = []
-var s = window.socket
 var div_sequencer
 
 s.emit('get_current_pattern', { empty: true })
@@ -85,7 +86,7 @@ function render_sequencer_controls () {
     div_labels.append('div').attr('class', 'col-xs-1').html('ch ' + (channel_idx + 1))
   })
 
-  div_labels.append('div').attr('class', 'col-xs-2').html('interval')
+  div_labels.append('div').attr('class', 'col-xs-2').html('interval (ms)')
   div_labels.append('div').attr('class', 'col-xs-2').html('delete row')
 
   current_pattern.forEach(function (row, row_idx) {
