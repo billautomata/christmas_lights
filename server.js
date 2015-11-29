@@ -125,7 +125,7 @@ io.on('connection', function (socket) {
 });
 
 ///////////////////////////////////////////////////////////////////////////////
-// setup webserver
+// setup pattern player and start the app
 p = require('./lib/Player.js')()
 p.start()
 p.set_gpio(gpio, pins)
