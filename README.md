@@ -24,7 +24,7 @@ Requires mongodb for storing patterns.
 
 ### assembly instructions
 
-![model b plus pinout](public/pinout_layout_model_bplus.png)
+![model b plus pinout](public/pin_layout_model_bplus.png)
 
 # pattern structure
 
